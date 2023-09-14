@@ -11,3 +11,33 @@ my library
 
 ![Theme 3](theme3.png)
 [Theme 3 json file](profile3.json)
+
+# Library
+Available functions:
+- Get-DriveSpace
+- Get-MonitorInfo
+- Get-Uptime
+- Get-RebootInfoW
+- Get-HwInfo
+- Get-OSInfo
+- Get-BiosParams
+- Get-Lockouts
+- Get-LockoutLocation
+- Get-FileMetaData
+- Get-RebootReason
+- Get-MemoryConsumed
+- Get-LongNames
+- Get-PageTime
+- Play-Sound
+- Get-PendingReboot
+- Get-MemoryTotals
+- Get-LastCommandExecutionTime
+- Get-NewFiles
+- Get-Currency
+- Compare-Tree
+- Compare-File
+- Get-Encoding
+- Get-LoggedinUser
+- Get-DuplicateFiles
+- Get-IPwhois
+- Get-MOInstalledPrograms
