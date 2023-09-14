@@ -75,7 +75,7 @@
         "list": 
         [
             {
-                "backgroundImage": "D:\\Metin\\wtlogos\\unixporn.png",
+                "backgroundImage": "D:\\Folder\\wtlogos\\unixporn.png",
                 "backgroundImageAlignment": "right",
                 "backgroundImageOpacity": 0.21,
                 "backgroundImageStretchMode": "uniform",
@@ -86,7 +86,7 @@
                 "historySize": 50000,
                 "intenseTextStyle": "none",
                 "name": "Windows PowerShell",
-                "startingDirectory": "D:\\Smalltools"
+                "startingDirectory": "D:\\Folder"
             },
             {
                 "commandline": "%SystemRoot%\\System32\\cmd.exe",
