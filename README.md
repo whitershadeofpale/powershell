@@ -41,3 +41,4 @@ Available functions:
 
 ![Theme 3](theme3.png)
 - [Theme 3 json file](profile3.json)
+- No json file, since not based on Windows Terminal
