@@ -1,5 +1,5 @@
 # powershell
-Library(Lib1.ps1)
+![Library](Lib1.ps1)
 Available functions:
 - Get-DriveSpace
 - Get-MonitorInfo
@@ -29,15 +29,15 @@ Available functions:
 - Get-IPwhois
 - Get-MOInstalledPrograms
 
-Bing Daily Wallpaper Download(bingwp.ps1)
+![Bing Daily Wallpaper]Download(bingwp.ps1)
 
 ![Theme 1](theme1.png)
-[Theme 1 json file](profile1.json)
-[Windows Terminal config file](settings1.json)
+- [Theme 1 json file](profile1.json)
+- [Windows Terminal config file](settings1.json)
 
 ![Theme 2](theme2.png)
-[Theme 2 json file](profile2.json)
-[Windows Terminal config file](settings2.json)
+- [Theme 2 json file](profile2.json)
+- [Windows Terminal config file](settings2.json)
 
 ![Theme 3](theme3.png)
-[Theme 3 json file](profile3.json)
+- [Theme 3 json file](profile3.json)
