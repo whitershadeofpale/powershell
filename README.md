@@ -29,7 +29,7 @@ Available functions:
 - Get-IPwhois
 - Get-MOInstalledPrograms
 
-![Bing Daily Wallpaper]Download(bingwp.ps1)
+![Bing Daily Wallpaper Downloader](bingwp.ps1)
 
 ![Theme 1](theme1.png)
 - [Theme 1 json file](profile1.json)
