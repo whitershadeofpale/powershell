@@ -30,6 +30,7 @@ Available functions:
 - Get-MOInstalledPrograms
 
 ![Bing Daily Wallpaper Downloader](bingwp.ps1)
+
 ![Google Earth Wallpaper Downloader](earthwp.ps1)
 
 ![Theme 1](theme1.png)
