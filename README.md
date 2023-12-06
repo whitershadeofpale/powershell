@@ -30,15 +30,16 @@ Available functions:
 - Get-MOInstalledPrograms
 
 ![Bing Daily Wallpaper Downloader](bingwp.ps1)
+![Google Earth Wallpaper Downloader](earthwp.ps1)
 
 ![Theme 1](theme1.png)
-- [Theme 1 json file](profile1.json)
+- [Profile file](profile1.ps1)
 - [Windows Terminal config file](settings1.json)
 
 ![Theme 2](theme2.png)
-- [Theme 2 json file](profile2.json)
+- [Profile file](profile2.ps1)
 - [Windows Terminal config file](settings2.json)
 
 ![Theme 3](theme3.png)
-- [Theme 3 json file](profile3.json)
+- [Profile file](profile3.ps1)
 - No json file, since not based on Windows Terminal
