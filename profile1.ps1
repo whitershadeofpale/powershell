@@ -1,29 +1,7 @@
-# Write-Host "Profile folder : $env:USERPROFILE\Documents" -ForegroundColor DarkGray
-# Write-Host "Old profile file : D:\Metin\docs\WindowsPowerShell\profile.ps1 which does not exits in new installation." -ForegroundColor DarkGray
-# Write-Host "Current profile file is `$profile variable and the value is $profile" -ForegroundColor Gray
 New-Alias reboot Restart-Computer
 New-Alias poweroff Stop-Computer
-# New-Alias -Name "n" "D:\Smalltools\Notepad2.exe"
-New-Alias -Name "n" "code"
-New-Alias -Name "uptime" Get-Uptime
 New-Alias less "C:\Program Files\Git\usr\bin\less.exe"
 New-Alias -Name we "Get-WinEvent"
-
-$tips = "D:\Metin\tips"
-# $gdrv = "C:\Users\metin.ozmener\Google Drive"
-
-# Exchange server OWA logs
-$excowa = "\\exchange2019\c$\inetpub\logs\LogFiles\W3SVC1"
-
-# Exchange server Receive logs
-$excrcv = "\\exchange2019\c$\Program Files\Microsoft\Exchange Server\V15\TransportRoles\Logs\FrontEnd\ProtocolLog\SmtpReceive"
-
-# Exchange server Send logs
-$excsnd = "\\exchange2019\c$\Program Files\Microsoft\Exchange Server\V15\TransportRoles\Logs\Hub\ProtocolLog\SmtpSend"
-
-function ks {
-	Get-Process Spotify,gamebar -ea silent | Stop-Process -Force
-}
 
 function Show-Quote { 
  
