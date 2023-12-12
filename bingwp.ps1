@@ -116,9 +116,3 @@ else {
     Add-Content -Path $logfile -Value "$bugun - file is already downloaded."
 }
 Start-Sleep -Seconds 4
-
-# $spotlight = "C:\Users\metin\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets"
-
-# $files = Get-ChildItem -Path $spotlight | where { $_.Length -gt 300000 }
-
-# $files | ForEach-Object { Copy-Item $PSItem -Destination (Join-Path -Path $saveDir -ChildPath ($PSItem.Name+".jpg")) }
