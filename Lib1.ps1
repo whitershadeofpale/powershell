@@ -201,7 +201,7 @@ param
     }
 }
 
-function Get-RebootInfoW
+function Get-RebootInfo
 {
 <#
 .SYNOPSIS
@@ -913,7 +913,7 @@ function Get-MemoryConsumed
         - PeakVirtualMemorySize (-removed-)
         - PeakWorkingSet
 
-    Metin Ozmener 2018-03-08
+    Metin, 2018-03-08
 .EXAMPLE
     Get-MemoryConsumed -ProcessName firefox
 #>
@@ -1685,6 +1685,60 @@ function Get-MOInstalledPrograms {
         else {
             Get-ChildItem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall |  ForEach-object { (Get-ItemProperty Microsoft.PowerShell.Core\Registry::$_).DisplayName}
         }
-    }
+}
 
-    
+function Get-Encoding
+{
+<#
+.SYNOPSIS
+    Get the encoding of a text file.
+.DESCRIPTION
+    Taken from https://community.idera.com/database-tools/powershell/powertips/b/tips/posts/get-text-file-encoding
+    this file reads the first 4 bytes from the given text file,
+    and determines encoding according to:
+        - 0xEF 0xBB 0xBF : UTF-8
+        - 0x2B 0x2F 0x76 : UTF-7
+        - 0xFF 0xFE      : Unicode
+        - 0xFE 0xFE      : Unicode BE
+        - 0x00 0x00 0xFE 0xFF : UTF-32
+.EXAMPLE
+    Get-Encoding -Path D:\file.txt
+.EXAMPLE
+    dir $home -Filter *.txt -Recurse | Get-Encoding
+#>
+  param
+  (
+    [Parameter(Mandatory,ValueFromPipeline,ValueFromPipelineByPropertyName)]
+    [Alias('FullName')]
+    [string]
+    $Path
+  )
+
+  process
+  {
+    $bom = New-Object -TypeName System.Byte[](4)
+
+    $file = New-Object System.IO.FileStream($Path, 'Open', 'Read')
+
+    $null = $file.Read($bom,0,4)
+    $file.Close()
+    $file.Dispose()
+
+    $enc = [Text.Encoding]::ASCII
+    if ($bom[0] -eq 0x2b -and $bom[1] -eq 0x2f -and $bom[2] -eq 0x76)
+      { $enc =  [Text.Encoding]::UTF7 }
+    if ($bom[0] -eq 0xff -and $bom[1] -eq 0xfe)
+      { $enc =  [Text.Encoding]::Unicode }
+    if ($bom[0] -eq 0xfe -and $bom[1] -eq 0xff)
+      { $enc =  [Text.Encoding]::BigEndianUnicode }
+    if ($bom[0] -eq 0x00 -and $bom[1] -eq 0x00 -and $bom[2] -eq 0xfe -and $bom[3] -eq 0xff)
+      { $enc =  [Text.Encoding]::UTF32}
+    if ($bom[0] -eq 0xef -and $bom[1] -eq 0xbb -and $bom[2] -eq 0xbf)
+      { $enc =  [Text.Encoding]::UTF8}
+
+    [PSCustomObject]@{
+      Encoding = $enc
+      Path = $Path
+    }
+  }
+}
