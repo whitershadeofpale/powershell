@@ -1648,7 +1648,13 @@ function Get-IPwhois {
     # discovered 2023-01-30
     $service_3 = "http://ip-api.com/json/$IPAddress"
 
-    $service_current = $service_3
+    # discovered 2024-09-25 - seems like there's no limit
+    $service_4 = "https://api.iplocation.net/?ip=$IPAddress"
+
+    # learnt from chatgpt 2025-03-06 auth may be necessary at some point but works
+    $service5 = "https://ipinfo.io/$IPAddress"
+
+    $service_current = $service_4
     Write-Verbose $service_current
 
     try {
@@ -1751,4 +1757,143 @@ function poweroff
 function reboot
 {
 	Restart-Computer -Force
+}
+
+function List-MODevices
+{
+<# 
+.SYNOPSIS
+    lsusb for Windows
+
+.DESCRIPTION
+    Lists PNP devices, filtering only present ones and those who have USB* in their
+    instance ID.
+
+.EXAMPLE
+    List-MODevice -cn computer
+    
+    2024-04-04 https://winaero.com/how-to-find-and-list-connected-usb-devices-in-windows-10/
+#>
+    param($Computername)
+
+    if ($Computername) {
+        if (Test-Connection -Quiet -Count 1 -ComputerName $Computername) {
+            Invoke-Command -cn $Computername {Get-PnpDevice -PresentOnly | Where-Object { $_.InstanceId -match '^USB' } | Format-Table -AutoSize}
+        }
+    }
+    else {
+        Get-PnpDevice -PresentOnly | Where-Object { $_.InstanceId -match '^USB' } | Format-Table -AutoSize
+    }
+}
+
+function Get-NTFSFormatDate
+{
+<#
+ .SYNOPSIS
+    Retrieves formating date of an NTFS volume.
+.DESCRIPTION
+    2025-01-22 Metin - long after discovering Get-Item method
+.EXAMPLE
+    Get-NTFSFormatDate -Volume 'C:'
+#>    
+
+param(
+    [Parameter(Mandatory=$true)][string]$Volume,
+    [string]$ComputerName
+)
+    if ($ComputerName) {
+        $ses1 = New-PSSession -ComputerName $ComputerName
+        Invoke-Command -Session $ses1 -ArgumentList $Volume -ScriptBlock {
+            try {
+                $item = Get-Item -Path $args[0]
+                $item.CreationTime
+            }
+            catch {
+                Write-Error "Volume $Volume not found on $(hostname)"
+            }
+        }
+    }
+    else {
+        try {
+            $item = Get-Item -Path $Volume -ErrorAction Stop
+            $item.CreationTime
+        }
+        catch {
+            Write-Error "Volume $Volume not found"
+        }
+    }
+}
+
+function Check-ActivationStatus {
+    <#
+    .SYNOPSIS
+        Check the activation status of a remote computer.
+    .DESCRIPTION
+        This function checks the activation status of a remote computer by querying the SoftwareLicensingProduct class.
+        If no computer name is provided, the local computer is queried.
+
+        Possible LicenseStatus values:
+
+            0 – Unlicensed
+            1 – Licensed
+            2 – OOBGrace
+            3 – OOTGrace – the computer configuration has been changed, and it cannot be activated 
+                automatically, or more than 180 days passed
+            4 – NonGenuineGrace
+            5 – Notification – Windows trial period is over
+            6 – ExtendedGrace (you can extend the Windows evaluation period several times using the 
+                slmgr /rearm command or convert the evaluation to a full version)
+
+        2025-01-23 Metin [https://woshub.com/check-windows-activation-status/]
+    .EXAMPLE
+        Check-ActivationStatus -remoteComputer "Server01"
+    #>
+    param(
+        [string[]]$ComputerName=$env:COMPUTERNAME
+    )
+
+    Invoke-Command -ea silent -ComputerName $ComputerName -ScriptBlock { 
+        $strExplaination = ("Unlicensed","Licensed","OOBGrace","OOTGrace","NonGenuineGrace","Notification","ExtendedGrace")
+        # Get-CimInstance SoftwareLicensingProduct -Filter "Name like 'Windows%'" | Where-Object { $_.PartialProductKey } | Select-Object Name, @{N="Status";E={"$($_.LicenseStatus) - $($strExplaination[$_.LicenseStatus])"}}, PSComputerName 
+        try {
+            Get-CimInstance SoftwareLicensingProduct -Filter "Name like 'Windows%'" -EA Stop | Where-Object { $_.PartialProductKey } | Select-Object Name, @{N="Status";E={"$($_.LicenseStatus) - $($strExplaination[$_.LicenseStatus])"}}, PSComputerName 
+        } 
+        catch {
+            [PSCustomObject]@{
+                Name = "."
+                status = "Gcim Error"
+                PSComputerName = $ComputerName
+            }
+        }
+        
+    }
+}
+
+function Test-ICMP {
+<#
+    2025-03-18 Metin, ChatGPT yapti
+#>
+    param (
+        [string]$Computername = "8.8.8.8",
+        [int]$Timeout = 1000  # Milisaniye cinsinden
+    )
+
+    $ping = New-Object System.Net.NetworkInformation.Ping
+    $task = $ping.SendPingAsync($Computername, $Timeout)
+
+    # Task.WaitAny ile $Timeout süresi kadar bekle
+    $completed = [System.Threading.Tasks.Task]::WaitAny(@($task), $Timeout)
+
+    if ($completed -eq 0) {
+        # Ping işlemi tamamlandı, sonucu al
+        $reply = $task.Result
+        if ($reply.Status -eq "Success") {
+            $True
+        } else {
+            $False
+        }
+    } else {
+        # Belirtilen süre içinde yanıt alınamadı
+        $False
+    }
 }
