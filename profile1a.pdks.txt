@@ -1,0 +1,114 @@
+New-Alias reboot Restart-Computer
+New-Alias poweroff Stop-Computer
+New-Alias -Name "n" "code"
+New-Alias -Name "uptime" Get-Uptime
+New-Alias -Name we "Get-WinEvent"
+New-Alias -Name rsv "Restart-Service"
+
+Set-PSReadLineOption -PredictionSource History -PredictionViewStyle ListView
+function Prompt
+{
+    $prompt_path = Get-Location
+    $prompt_right = Get-Date -Format " dd, ddd | HH:mm "
+    $winlogo = [char]0xE70F
+    $prompt_char = [char]0x276f
+    $elevated = [char]0xF79F
+    $ram_glyph = [char]::ConvertFromUtf32(0x1F39E)
+    $pf_glyph = [char]::ConvertFromUtf32(0x1f4c4) # 0x1F4C8
+
+    $battery = gcim Win32_Battery
+    $BatteryGlyph = ""
+
+    $OS=gcim Win32_OperatingSystem
+    $PF=gcim Win32_PageFileUsage
+    $CS=gcim Win32_ComputerSystem
+    # use Win32_PageFileUsage and Win32_ComputerSystem for more info - 2025-03-17 - https://commandline.ninja/query-page-file-size-on-windows-servers-w-powershell/
+    # display remaining free RAM and free SWAP
+    $tmp1 = "{0:N0}" -f ((($CS.TotalPhysicalMemory)/1KB-$OS.FreePhysicalMemory)/1MB)
+    $meminfo = "$ram_glyph  " + $tmp1
+    $tmp1 = "{0:N0}" -f ($CS.TotalPhysicalMemory/1GB)
+    $meminfo += "/" + $tmp1
+    $meminfo += " - "
+    $tmp1 = "{0:N0}" -f ($PF.CurrentUsage/1MB)
+    $meminfo += "$pf_glyph " + $tmp1
+    $tmp1 = "{0:N0}" -f ($PF.AllocatedBaseSize/1KB)
+    $meminfo += "/" + $tmp1 + " "
+    $uphours = ((Get-Date) - $OS.LastBootUpTime).TotalHours
+    $uphours = "{0:N0}" -f $uphours
+    $prompt_right += "($uphours)"
+
+    if ($battery.Status -ne "OK") { $BatteryGlyph = [char]0xf12a } # EXCLAMATIN before percentage; which may mean there is an aging problem with the battery
+
+    if ($battery.BatteryStatus -eq 1) { $BatteryGlyph += [char]0xf063 }
+    elseif ($battery.BatteryStatus -eq 2) { $BatteryGlyph += [char]0xf062 }
+
+    if ($battery.EstimatedChargeRemaining -ge 80) { $bcolor = "green"}
+    elseif ($battery.EstimatedChargeRemaining -ge 50) { $bcolor = "cyan"}
+    elseif ($battery.EstimatedChargeRemaining -gt 30) { $bcolor = "blue"}
+    else { $bcolor = "red"}
+    $prompt_battery = "[$BatteryGlyph $($battery.EstimatedChargeRemaining)] "
+
+    # leftmost: Path
+    Write-Host $prompt_path -ForegroundColor Cyan -NoNewline
+    $current_Y = [Console]::CursorTop
+    $console_width = [Console]::BufferWidth
+    [Console]::SetCursorPosition($console_width-($prompt_battery.Length + $prompt_right.length + $meminfo.length),$current_Y)
+
+    # Rightmost: Battery + Memory + date&time
+    Write-Host $prompt_battery -ForegroundColor $bcolor -NoNewline
+    Write-Host $meminfo -ForegroundColor DarkYellow -NoNewline
+    Write-Host $prompt_right -ForegroundColor Gray -BackgroundColor DarkMagenta
+
+    if ((Get-History).Length -gt 0)
+    {
+        $LastExecutionTime = [long]((Get-History)[-1].EndExecutionTime - (Get-History)[-1].StartExecutionTime).TotalMilliSeconds
+        if ($LastExecutionTime -gt 5000) {
+            Play-Sound -Play "C:\Windows\Media\Windows Proximity Notification.wav"
+        }
+    }
+    else
+    {
+        $LastExecutionTime = "0"
+    }
+
+    if ($LastExecutionTime -gt 3600000) {
+        $LastExecutionTime = $LastExecutionTime/3600000
+        $Duration = "{0:n1}" -f $LastExecutionTime
+        $Duration = "($Duration hour) "
+    }
+    elseif ($LastExecutionTime -gt 60000) {
+        $LastExecutionTime = $LastExecutionTime/60000
+        $Duration = "{0:n1}" -f $LastExecutionTime
+        $Duration = "($Duration min) "
+    }
+    elseif ($LastExecutionTime -gt 2000)
+    {
+        $LastExecutionTime = $LastExecutionTime/1000
+        $Duration = "{0:n1}" -f $LastExecutionTime
+        $Duration = "($Duration sec) "
+    }
+    elseif ($LastExecutionTime -gt 10) {
+        $Duration = "($LastExecutionTime ms) "
+    }
+    else { $Duration ="" }
+    
+    # second line: elevation + duration + prompt
+    if ((New-Object Security.Principal.WindowsPrincipal(
+        [Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole(
+        [Security.Principal.WindowsBuiltInRole]::Administrator))
+        {
+            Write-Host "$elevated " -ForegroundColor White -BackgroundColor Red -NoNewline
+            Write-Host "$Duration" -ForegroundColor Magenta -NoNewline
+            Write-Host "$winlogo $prompt_char" -ForegroundColor White -NoNewline
+        }
+    else {
+        Write-Host "$Duration" -ForegroundColor Magenta -NoNewline
+        Write-Host "$winlogo $prompt_char" -ForegroundColor White -NoNewline
+    }
+
+    Set-PSReadLineOption -PromptText "$winlogo $prompt_char "
+
+    # if required to diplay path in the title bar:
+    $host.ui.rawui.WindowTitle = (Get-Location)
+    return " "
+}
