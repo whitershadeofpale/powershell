@@ -44,3 +44,7 @@ Available functions:
 ![Theme 3](theme3.png)
 - [Profile file](profile3.ps1)
 - No json file, since not based on Windows Terminal
+
+![Theme 4](theme4.png)
+- [Profile file](profile4.ps1)
+- [Windows Terminal config file](settings4.json)
