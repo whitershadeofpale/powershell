@@ -1,0 +1,204 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": 
+    [
+        {
+            "command": 
+            {
+                "action": "copy",
+                "singleLine": false
+            },
+            "id": "User.copy.644BA8F2"
+        },
+        {
+            "command": "toggleFocusMode",
+            "id": "User.toggleFocusMode"
+        },
+        {
+            "command": "find",
+            "id": "User.find"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "auto",
+                "splitMode": "duplicate"
+            },
+            "id": "User.splitPane.A6751878"
+        },
+        {
+            "command": "closePane",
+            "id": "User.closePane"
+        },
+        {
+            "command": "openNewTabDropdown",
+            "id": "User.openNewTabDropdown"
+        },
+        {
+            "command": 
+            {
+                "action": "commandPalette"
+            },
+            "id": "User.commandPalette.D3F0B923"
+        },
+        {
+            "command": "paste",
+            "id": "User.paste"
+        }
+    ],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "initialCols": 130,
+    "initialRows": 30,
+    "keybindings": 
+    [
+        {
+            "id": "User.copy.644BA8F2",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "User.commandPalette.D3F0B923",
+            "keys": "ctrl+shift+p"
+        },
+        {
+            "id": "User.splitPane.A6751878",
+            "keys": "alt+shift+d"
+        },
+        {
+            "id": "User.openNewTabDropdown",
+            "keys": "ctrl+n"
+        },
+        {
+            "id": "User.find",
+            "keys": "ctrl+f"
+        },
+        {
+            "id": "User.paste",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "User.toggleFocusMode",
+            "keys": "ctrl+shift+f11"
+        },
+        {
+            "id": "User.closePane",
+            "keys": "shift+f4"
+        }
+    ],
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults": 
+        {
+            "antialiasingMode": "cleartype",
+            "cursorShape": "vintage",
+            "font": 
+            {
+                "face": "CaskaydiaCove Nerd Font Mono"
+            },
+            "opacity": 95,
+            "padding": "15",
+            "useAcrylic": false
+        },
+        "list": 
+        [
+            {
+                "backgroundImage": "D:\\PowerShellcore_logo.png",
+                "backgroundImageAlignment": "right",
+                "backgroundImageOpacity": 0.21,
+                "backgroundImageStretchMode": "uniform",
+                "colorScheme": "rebecca",
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo",
+                "cursorShape": "vintage",
+                "font": 
+                {
+                    "face": "MartianMono Nerd Font Propo",
+                    "size": 11
+                },
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "historySize": 50000,
+                "intenseTextStyle": "none",
+                "name": "Windows PowerShell",
+                "startingDirectory": "D:\\Smalltools"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "closeOnExit": "graceful",
+                "guid": "{07b52e3e-de2c-5db4-bd2d-ba144ed6c273}",
+                "hidden": false,
+                "name": "Ubuntu-20.04",
+                "source": "Windows.Terminal.Wsl"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": true,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            }
+        ]
+    },
+    "schemes": 
+    [
+        {
+            "background": "#292A44",
+            "black": "#12131E",
+            "blue": "#7AA5FF",
+            "brightBlack": "#666699",
+            "brightBlue": "#69C0FA",
+            "brightCyan": "#8BFDE1",
+            "brightGreen": "#01EAC0",
+            "brightPurple": "#C17FF8",
+            "brightRed": "#FF92CD",
+            "brightWhite": "#DDDDDD",
+            "brightYellow": "#FFFCA8",
+            "cursorColor": "#B89BF9",
+            "cyan": "#56D3C2",
+            "foreground": "#AAAAAA",
+            "green": "#04DBB5",
+            "name": "rebecca",
+            "purple": "#BF9CF9",
+            "red": "#DD7755",
+            "selectionBackground": "#663399",
+            "white": "#BBBBBB",
+            "yellow": "#F2E7B7"
+        },
+        {
+            "background": "#341F4D",
+            "black": "#000000",
+            "blue": "#6943FF",
+            "brightBlack": "#686868",
+            "brightBlue": "#6871FF",
+            "brightCyan": "#79E8FB",
+            "brightGreen": "#43D426",
+            "brightPurple": "#FF77FF",
+            "brightRed": "#F92A1C",
+            "brightWhite": "#FFFFFF",
+            "brightYellow": "#F1D000",
+            "cursorColor": "#FFFFFF",
+            "cyan": "#00C5C7",
+            "foreground": "#9C9C9C",
+            "green": "#3AD900",
+            "name": "shades-of-purple",
+            "purple": "#FF2C70",
+            "red": "#D90429",
+            "selectionBackground": "#FFFFFF",
+            "white": "#B0B0B0",
+            "yellow": "#FFE700"
+        }
+    ],
+    "themes": []
+}
