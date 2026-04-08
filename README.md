@@ -34,6 +34,7 @@ Available functions:
 ![Google Earth Wallpaper Downloader](earthwp.ps1)
 
 ![Theme 1](theme1.png)
+This theme uses "CaskaydiaCove Nerd Font Mono" font family.
 - [Profile file](profile1.ps1)
 - [Windows Terminal config file](settings1.json)
 
@@ -46,5 +47,6 @@ Available functions:
 - No json file, since not based on Windows Terminal
 
 ![Theme 4](theme4.png)
+This one uses "MartianMono Nerd Font Propo" font family.
 - [Profile file](profile4.ps1)
 - [Windows Terminal config file](settings4.json)
