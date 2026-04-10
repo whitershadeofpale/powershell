@@ -8,13 +8,20 @@ $targetpath = "C:\Tools\"
 $list = Invoke-WebRequest -UseBasicParsing -Uri $url
 
 $htmObj = New-Object -ComObject "HTMLFile"
-$htmObj.IHTMLDocument2_write($list.Content)
+try {
+    $htmObj.IHTMLDocument2_write($list.Content)
+}
+catch {
+    $bytes = [System.Text.Encoding]::Unicode.GetBytes($list.Content)
+    $htmObj.write($bytes)
+}
+
 $pattern = '(\w+,\s+\w+\s+\d+,\s+\d+\s+\d+:\d+\s+[AP]M)\s+(\d+)\s+(\S+)' # weekday, month day, year time AM/PM    size    filename
 
-$indxStart = ($html.body.outerText | sls -Pattern $pattern).Matches[0].Index    # skip header lines
-$indxEnd = ($html.body.outerText).Length
+$indxStart = ($htmObj.body.outerText | Select-String -Pattern $pattern).Matches[0].Index    # skip header lines
+$indxEnd = ($htmObj.body.outerText).Length
 
-$raw = $html.body.outerText.Substring($indxStart, $indxEnd-$indxStart)
+$raw = $htmObj.body.outerText.Substring($indxStart, $indxEnd-$indxStart)
 
 $results = [regex]::Matches($raw, $pattern) | ForEach-Object {
     [PSCustomObject]@{
@@ -37,11 +44,11 @@ $keeploop = $true
 
 while ($keeploop) {
     $keyword = Read-Host "Enter a few-letter keyword (q for quit)"
-    if ($keyword -eq "q" -or $keyword -eq "quit") {exit}
+    if ($keyword -eq "q" -or $keyword -eq "quit") {break}
 
-    $filtered = $fulllist | Where-Object { $_.Name -like "*$keyword*" }
+    $filtered = @($fulllist | Where-Object { $_.Name -like "*$keyword*" })
 
-    $filtered2 = $results | Where-Object { $_.FileName -like "*$keyword*" -and $_.Filename -match ".zip$"}
+    $filtered2 = @($results | Where-Object { $_.FileName -like "*$keyword*" -and $_.Filename -match ".zip$"})
 
     Write-Host "filtered $($filtered.Count) items"
     if ($filtered.Count -eq 0) {
@@ -56,17 +63,17 @@ while ($keeploop) {
         }
     }
     [Console]::Out.Flush()
-    $choice = Read-Host "Enter the number you want"
+    $choice = Read-Host "Pick a number (or q for quit)"
 
     if ($choice -eq "q" -or $choice -eq "Q" -or $choice -eq "quit" -or $choice -eq "QUIT") {
-        exit
+        break
     }
     elseif ([int][char]$choice -ge 48 -and [int][char]$choice -le 57) {
         $choice = [int]$choice
     }
     else {
         Write-Host "Not an integer."
-        exit
+        break
     }
 
     Write-Host "You have chosen: $($filtered[$choice].Name)"
