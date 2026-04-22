@@ -15,6 +15,13 @@ if ($drives) {
         catch {
             Write-Host "An error occurred while trying to eject the drive ${resp}:"
             Write-Host $_.Exception.Message
+
+            if (gcm handle64 -ErrorAction SilentlyContinue) {
+                handle64 "${resp}:" -NoBanner
+            }
+            else {
+                Write-Host "handle64.exe not found."
+            }
         }
     }
     else {
