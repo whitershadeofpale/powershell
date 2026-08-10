@@ -526,6 +526,14 @@ if (gcim Win32_Battery) {
     }
 }
 
+# Fast boot etkin mi
+$a = (gp "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power")."HiberbootEnabled"
+if ($a -eq 0) { $b = "Devre disi"} else { $b = "Etkin"}
+$dataTable += [PSCustomObject]@{
+    Etiket = "Fast boot"
+    Deger = "$b ($a)"
+}
+
 # Smart Disk bilgisi
 $SMART = Get-CimInstance -Namespace root\wmi -ClassName MSStorageDriver_FailurePredictStatus | Select-Object Active, PredictFailure, Reason, @{Name="Device";E={$_ -match 'Prod_([^\\]+)' | Out-Null;$Matches[1]}}
 $SMART | ForEach-Object {
@@ -535,11 +543,11 @@ $SMART | ForEach-Object {
     }
 }
 
-# storage reliablility bilgisi - sadece yukseltilmis ayricaliklarla
 if ((New-Object Security.Principal.WindowsPrincipal(
     [Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole(
     [Security.Principal.WindowsBuiltInRole]::Administrator))
 {
+    # storage reliablility bilgisi - sadece yukseltilmis ayricaliklarla
     $a = Get-PhysicalDisk | Get-StorageReliabilityCounter | Select DeviceId, Temperature, Wear, ReadErrorsTotal, WriteErrorsTotal, PowerOnHours
     $a | ForEach-Object {
         $dataTable += [PSCustomObject]@{
@@ -547,9 +555,25 @@ if ((New-Object Security.Principal.WindowsPrincipal(
             Deger = "Temperature=$($_.Temperature)C, Wear=$($_.Wear)%, ReadErrors=$($_.ReadErrorsTotal), WriteErrors=$($_.WriteErrorsTotal), PowerOnHours=$($_.PowerOnHours)"
         }
     }
+
+    # Secure boot denetle
+    $a = Confirm-SecureBootUEFI
+    $a | ForEach-Object {
+        $dataTable += [PSCustomObject]@{
+            Etiket = "Secure boot (Guvenli onyukleme)"
+            Deger = $a
+        }
+    }
+
+    # bitlocker durumunu goster
+    $a = Get-BitLockerVolume -MountPoint $env:SystemDrive | Select-Object MountPoint, VolumeStatus, EncryptionMethod
+    $dataTable += [PSCustomObject]@{
+        Etiket = "Bitlocker (@SystemDrive)"
+        Deger = "$($a.MountPoint) $($a.VolumeStatus) ($($a.EncryptionMethod))"
+    }
 }
 else {
-    Write-Host "SSD / NVMe diskler hakkinda bilgi icin yonetici yetkileriyle calistirin."
+    Write-Host "SSD / NVMe diskler / Secure Boot hakkinda bilgi icin yonetici yetkileriyle calistirin."
 }
 
 # System-Disk kaynakli hatalar
