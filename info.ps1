@@ -321,16 +321,18 @@ $dataTable += [PSCustomObject]@{
 }
 
 # CPU bilgisi
-$a = Get-CimInstance Win32_Processor
-$dataTable += [PSCustomObject]@{
-    Etiket = "CPU"
-    Deger = "$($a.Name) - ($($a.NumberOfLogicalProcessors) Cores x $($a.ThreadCount) Threads)"
+$i=0
+Get-CimInstance Win32_Processor | ForEach-Object {
+    $dataTable += [PSCustomObject]@{
+        Etiket = "CPU-$i"
+        Deger = "$($_.Name) - ($($a.NumberOfLogicalProcessors) Cores x $($_.ThreadCount) Threads)"
+    }
+    $i++
 }
 
 # Bellek
-$a = gcim Win32_PhysicalMemory
 $i = 1
-$a | ForEach-Object {
+gcim Win32_PhysicalMemory | ForEach-Object {
     $dataTable += [PSCustomObject]@{
         Etiket = "Bellek-$i"
         Deger = "{0:N0} GB" -f (($_.Capacity)/1GB)
@@ -339,9 +341,8 @@ $a | ForEach-Object {
 }
 
 # Ekran karti
-$a = gcim Win32_VideoController
 $i = 1
-$a | Foreach-Object {
+gcim Win32_VideoController | Foreach-Object {
     $dataTable += [PSCustomObject]@{
         Etiket = "Ekran Karti-$i"
         Deger = "$($_.Name) - ($([int]($_.AdapterRAM / 1MB)) MB)"
@@ -359,9 +360,8 @@ $a | Foreach-Object {
 }
 
 # Disk bilgisi
-$a = Get-PhysicalDisk | Select FriendlyName, MediaType, BusType
 $i = 1
-$a | ForEach-Object {
+Get-PhysicalDisk | Select FriendlyName, MediaType, BusType | ForEach-Object {
     $dataTable += [PSCustomObject]@{
         Etiket = "Disk Bilgisi-$i"
         Deger = "$($_.FriendlyName) - $($_.MediaType) - $($_.BusType)"
@@ -371,7 +371,7 @@ $a | ForEach-Object {
 
 # Boot partition bilgisi
 $a = Get-Partition | where IsBoot -eq $true | Select DiskNumber, PartitionNumber, DriveLetter
-$b = $a.DriveLetter
+$b = $a.DriveLetter # bunu tut
 $dataTable += [PSCustomObject]@{
     Etiket = "Boot Partition"
     Deger = "${b}:"
@@ -558,11 +558,9 @@ if ((New-Object Security.Principal.WindowsPrincipal(
 
     # Secure boot denetle
     $a = Confirm-SecureBootUEFI
-    $a | ForEach-Object {
-        $dataTable += [PSCustomObject]@{
-            Etiket = "Secure boot (Guvenli onyukleme)"
-            Deger = $a
-        }
+    $dataTable += [PSCustomObject]@{
+        Etiket = "Secure boot (Guvenli onyukleme)"
+        Deger = $a
     }
 
     # bitlocker durumunu goster
