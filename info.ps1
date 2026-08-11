@@ -325,7 +325,7 @@ $i=0
 Get-CimInstance Win32_Processor | ForEach-Object {
     $dataTable += [PSCustomObject]@{
         Etiket = "CPU-$i"
-        Deger = "$($_.Name) - ($($a.NumberOfLogicalProcessors) Cores x $($_.ThreadCount) Threads)"
+        Deger = "$($_.Name) - ($($_.NumberOfLogicalProcessors) Cores | $($_.ThreadCount) Threads | $($_.NumberOfLogicalProcessors) LogProcs)"
     }
     $i++
 }
