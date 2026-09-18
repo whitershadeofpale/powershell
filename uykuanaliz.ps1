@@ -3,7 +3,7 @@ param(
     [int]$Days=30
 )
 [datetime]$scripttime = Get-Date
-[datetime]$currentTime=Get-Date "1970-01-01"
+[datetime]$currentTime= $scripttime
 [datetime]$previousTime=$scripttime.AddDays(-$days)
 
 Write-Host "PrevTime = $previousTime"
@@ -16,10 +16,13 @@ if (Test-ICMP $Computername) {
         StartTime=$scripttime.AddDays(-$days)
     } | Sort-Object TimeCreated
     $diffSeconds = 10
+    $evs1 | ft -AutoSize
+    
     Write-Host "CurrentTime $($evs1[0].TimeCreated)"
     # ============================
     $evs2 = $evs1 | ForEach-Object {
         if ($_.ProviderName -eq "Microsoft-Windows-Power-Troubleshooter" -and $_.Id -eq 1) {
+            Write-Host "PT-1"
             [datetime]$currentTime = $_.TimeCreated
             $currentType = "Start"
 
@@ -35,6 +38,7 @@ if (Test-ICMP $Computername) {
             }
         }
         elseif ($_.ProviderName -eq "eventlog" -and $_.Id -eq 6005) {
+            Write-Host "6005"
             [datetime]$currentTime = $_.TimeCreated
             $currentType = "Start"
 
@@ -50,6 +54,7 @@ if (Test-ICMP $Computername) {
             }
         }
         elseif ($_.ProviderName -eq "Microsoft-Windows-Kernel-General" -and $_.Id -eq 12) {
+            Write-Host "KG-12"
             [datetime]$currentTime = $_.TimeCreated
             $currentType = "Start"
         
@@ -65,6 +70,7 @@ if (Test-ICMP $Computername) {
             }
         }
         elseif ($_.ProviderName -eq "Microsoft-Windows-Kernel-General" -and $_.Id -eq 13) {
+            Write-Host "KG-13"
             [datetime]$currentTime = $_.TimeCreated
             $currentType = "Shutdown"
 
@@ -80,6 +86,7 @@ if (Test-ICMP $Computername) {
             }
         }
         elseif ($_.ProviderName -eq "eventlog" -and $_.Id -eq 6006) {
+            Write-Host "6006"
             [datetime]$currentTime = $_.TimeCreated
             $currentType = "Shutdown"
             Write-Host "current: $currentTime, previous : $previousTime"
@@ -95,6 +102,7 @@ if (Test-ICMP $Computername) {
             }
         }
         elseif ($_.ProviderName -eq "Microsoft-Windows-Kernel-Power" -and $_.Id -eq 107) {
+            Write-Host "KP-107"
             [datetime]$currentTime = $_.TimeCreated
             $currentType = "Shutdown"
 
@@ -110,6 +118,7 @@ if (Test-ICMP $Computername) {
             }
         }
         elseif ($_.ProviderName -eq "eventlog" -and $_.Id -eq 6008) {
+            Write-Host "6008"
             [datetime]$currentTime = Get-Date -Date ("$($_.Properties[1].Value -replace([char]0x200e,'')) $($_.Properties[0].Value)")
             $currentType = "Shutdown"
 
@@ -129,6 +138,7 @@ if (Test-ICMP $Computername) {
             # }
         }
         elseif ($_.ProviderName -eq "Microsoft-Windows-Kernel-Power" -and $_.Id -eq 42) {
+            Write-Host "KP-42"
             [datetime]$currentTime = $_.TimeCreated
             $currentType = "Shutdown"
 
@@ -156,6 +166,8 @@ if (Test-ICMP $Computername) {
     }
 
     $evs2 | ft -AutoSize
+
+    $evs2 | Out-GridView
 
     [datetime]$previousTime=$scripttime.AddDays(-$days)
     [string]$previousType=""
