@@ -48,5 +48,9 @@ This theme uses "CaskaydiaCove Nerd Font Mono" font family.
 
 ![Theme 4](theme4.png)
 This one uses "MartianMono Nerd Font Propo" font family.
+
+![Theme 5](theme5.png)
+- [Profile file](profile5.ps1)
+- [Windows Terminal config file](settings5.json)
 - [Profile file](profile4.ps1)
 - [Windows Terminal config file](settings4.json)
