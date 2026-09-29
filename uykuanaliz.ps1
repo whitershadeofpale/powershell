@@ -14,7 +14,9 @@ if (Test-ICMP $Computername) {
         ProviderName=("Microsoft-Windows-Kernel-Power","Microsoft-Windows-Power-Troubleshooter","Microsoft-Windows-Kernel-General","eventlog");
         Id=1,12,13,42,107,6005,6006,6008;
         StartTime=$t0
-    } | Sort-Object -Property TimeCreated
+    } -ea SilentlyContinue | Sort-Object -Property TimeCreated
+
+    if (-Not $evs) { Write-Host "no events on $computername in $Days days. exiting...";exit}
 
     # fixing time for 6008 events
     foreach ($ev in $evs) {
@@ -186,5 +188,5 @@ if (Test-ICMP $Computername) {
     "total of $total_downs shutdown(s) in $Days days"
 }
 else {
-    Write-Host "$_ is down."
+    Write-Host "$computername is down."
 }
