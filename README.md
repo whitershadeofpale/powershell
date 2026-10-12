@@ -55,3 +55,8 @@ This one uses "MartianMono Nerd Font Propo" font family.
 Simlpe profile that shows status of last command, along with hostname, path and date-time
 - [Profile file](profile5.ps1)
 - [Windows Terminal config file](settings5.json)
+
+![Theme 6](theme6.png)
+This one uses "MartianMono Nerd Font Propo" font family.
+- [Profile file](profile6.ps1)
+- [Windows Terminal config file](config.json)
