@@ -8,3 +8,6 @@ $Form.Icon = [System.Drawing.SystemIcons]::Information
 $Form.BalloonTipTitle = $Title
 $Form.BalloonTipText = $Message
 $Form.Visible = $true
+$Form.ShowBalloonTip(5000)
+Start-Sleep -Seconds 5
+$Form.Dispose()
