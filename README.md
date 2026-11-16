@@ -60,3 +60,8 @@ Simlpe profile that shows status of last command, along with hostname, path and 
 This one uses "MartianMono Nerd Font Propo" font family.
 - [Profile file](profile6.ps1)
 - [Windows Terminal config file](config.json)
+
+![Theme 7](theme7.png)
+This one uses "MartianMono Nerd Font Propo" font family.
+- [Profile file](profile7.ps1)
+- [Windows Terminal config file](colors7.json)
